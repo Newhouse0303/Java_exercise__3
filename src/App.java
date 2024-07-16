@@ -1,19 +1,51 @@
+
 import java.util.Scanner;
 
+
+
 public class App {
-    public void Exercise3() {
+
+    //String availableShapes = "triangle, quadrilateral, circle";
+
+    public static void printIntro() {
         System.out.println("Exercise 3");
+        System.out.println("A circle is defined by a centre and a perimeter point, the others by corner points. ");
     }
 
-    record Point(int x, int y) {
+    public static class Shape {
+        private String type; //triangle, quadrilateral, circle
+
+        public Shape(String type) {
+            this.type = type;
+        }
+
+        public String getType() {
+            return type;
+        }
     }
 
-    static String readType() {
+    class Triangle extends Shape {
+        public Triangle() {
+            super("triangle");
+        }
+    }
+        
+    public static Shape getShape() {
+        System.out.print("Enter the pattern type (triangle, quadrilateral, circle): ");
+        String shape = new Scanner(System.in).next();
+        Shape s = new Shape(shape);
+        return s;
+    }
+
+    record Point(int x, int y) {                // establishes coordinates
+    }
+
+    static String readType() {          // user input to define shape 
         System.out.print("Enter the pattern type (triangle, quadrilateral, circle): ");
         return new Scanner(System.in).next();
     }
 
-    static Point readPoint() {
+    static Point readPoint() {          // asks for coordinates 
         System.out.print("Enter the x-coordinate of the point:");
         var x = new Scanner(System.in).nextInt();
         System.out.print("Enter the y-coordinate of the point: ");
@@ -69,13 +101,20 @@ public class App {
     }
 
     public static void main() throws Exception {
-        System.out.print("A circle is defined by a centre and a perimeter point, the others by corner points");
 
-        Object[] p1 = new Object[4];
-        p1[0] = readType();
-        p1[1] = readPoint();
-        p1[2] = readPoint();
-        if (p1[0].equals("triangle"))
+        printIntro();
+        Shape shape1 = getShape();
+        Shape shape2 = getShape();
+        
+        //createObject(shape);
+
+
+
+        Object[] p1 = new Object[4];        // creates an array p1 (length 4)
+        p1[0] = readType();                 // determines shape
+        p1[1] = readPoint();                // x
+        p1[2] = readPoint();                // y
+        if (p1[0].equals("triangle"))   // if triangle asks one more point
             p1[3] = readPoint();
 
         Object[] p2 = new Object[4];
