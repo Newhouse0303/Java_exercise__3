@@ -16,7 +16,7 @@ class AreaCalculatorApp {
     
     public static void run() {
         UserInterface.printIntro();
-        String shape = UserInterface.inquireShape();
+        String shape = UserInterface.enquireShape();
         Shape[] objects = ShapeManager.createObjects(shape, N_OBJECTS);
         Calculator.count(objects);
     }    
@@ -141,12 +141,12 @@ class UserInterface {
         System.out.print("Enter the pattern type (triangle, quadrilateral, circle): ");
     }
 
-    public static String inquireShape() {
+    public static String enquireShape() {
         String shape = new Scanner(System.in).next();
         return shape; 
     }
 
-    public static Point inquirePoint() {
+    public static Point enquirePoint() {
         System.out.print("Enter the x-coordinate of the point : ");
         var x = new Scanner(System.in).nextInt();
         System.out.print("Enter the y-coordinate of the point : ");
