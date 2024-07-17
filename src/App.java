@@ -1,133 +1,163 @@
+
 import java.util.Scanner;
 
-public class App {
-    public void Exercise3() {
+// THIS IS THE MODEL
+
+public class App {   
+    public static void main(String[] args) throws Exception {
+        AreaCalculatorApp.run();    
+    }    
+}
+
+record Point(int x, int y) {}
+
+class AreaCalculatorApp {
+    public static int N_OBJECTS = 2;
+    
+    public static void run() {
+        UserInterface.printIntro();
+        String shape = UserInterface.inquireShape();
+        Shape[] objects = ShapeManager.createObjects(shape, N_OBJECTS);
+        Calculator.count(objects);
+    }    
+}
+
+class Calculator {
+    static void count(Shape[] objects) {
+        double area_sum = sumOfAreas(objects);
+        double boundaries = boundaries(objects);
+        UserInterface.printResult(area_sum, boundaries);    
+    }
+
+    static double sumOfAreas(Shape[] objects) {
+        double totalSum = 0;
+        for(int i = 0; i < objects.length; i++) {
+            totalSum += objects[i].calculateArea();
+        }
+        return totalSum;
+    }
+
+    static double boundaries(Shape[] objects) {
+        return 0.1;
+    }
+}
+
+class ShapeManager {
+
+    public static Shape[] createObjects(String shape, int n_objects) {
+
+        Shape[] objects = new Shape[n_objects];
+        for(int i = 0; i < n_objects; i++) {
+            objects[i] = createShape(shape);
+        }
+        return objects;
+    }
+
+    /*
+     * determines the number of Points needed accordin to the shape
+     */
+
+    public static Shape createShape(String shape) {
+        if (shape.equals("circle")) {
+            return new Circle(2, setCoordinates(2));
+        } else if (shape.equals("triangle")) {
+            return new Triangle(3, setCoordinates(3));
+        } else if (shape.equals("quadrilateral")) {
+            return new Quadrilateral(4, setCoordinates(4));
+        } else {
+            throw new IllegalArgumentException("unknown shape");
+        }
+    }
+
+    public static Point[] setCoordinates(int n) {
+        Point[] coords = new Point[n];
+        for(int i = 0; i < n - 1; i++) {
+            coords[i] = UserInterface.inquirePoint();
+            System.out.println(i);
+        }
+        return coords;
+    }    
+}
+
+class Shape {
+    private int n_Points; 
+    private Point[] coordinates; 
+
+    public Shape(int n_Points, Point[] coordinates) {
+        this.n_Points = n_Points;
+        this.coordinates = coordinates;
+    }
+
+    public int getN_points() {
+        return n_Points;
+    }
+
+    public double calculateArea() {
+        return 1;
+    }
+}
+
+class Circle extends Shape {
+
+    public Circle(int n_Points, Point[] coordinates) {
+        super(n_Points, coordinates);
+        
+    }
+    @Override
+    public double calculateArea() {
+        return 11;
+    }
+}
+
+class Triangle extends Shape {
+    
+    public Triangle(int n_Points, Point[] coordinates) {
+        super(n_Points, coordinates);
+    }
+
+    @Override
+    public double calculateArea() {    
+        return 111;
+    }
+}
+
+class Quadrilateral extends Shape {
+
+    public Quadrilateral(int n_Points, Point[] coordinates) {
+        super(n_Points, coordinates);
+    }
+    @Override
+    public double calculateArea() {
+        return 1111;
+    }
+
+}
+
+class UserInterface {
+
+    public static void printIntro() {
         System.out.println("Exercise 3");
-    }
-
-    record Point(int x, int y) {
-    }
-
-    static String readType() {
+        System.out.println("A circle is defined by a centre and a perimeter point, the others by corner points. ");
         System.out.print("Enter the pattern type (triangle, quadrilateral, circle): ");
-        return new Scanner(System.in).next();
     }
 
-    static Point readPoint() {
-        System.out.print("Enter the x-coordinate of the point:");
+    public static String inquireShape() {
+        String shape = new Scanner(System.in).next();
+        return shape; 
+    }
+
+    public static Point inquirePoint() {
+        System.out.print("Enter the x-coordinate of the point : ");
         var x = new Scanner(System.in).nextInt();
-        System.out.print("Enter the y-coordinate of the point: ");
+        System.out.print("Enter the y-coordinate of the point : ");
         var y = new Scanner(System.in).nextInt();
 
-        return new Point(x, y);
+        return new Point(x,y);
     }
 
-    static Point[] boundaries(Object[] ps) {
-        int x1 = Integer.MIN_VALUE,
-                y1 = Integer.MIN_VALUE,
-                x2 = Integer.MAX_VALUE,
-                y2 = Integer.MAX_VALUE;
-
-        for (int i = 1; i < ps.length - (ps[0].equals("triangle") ? 0 : 1); i++) {
-            x1 = Math.max(x1, ((Point) ps[i]).x);
-            y1 = Math.max(y1, ((Point) ps[i]).y);
-            x2 = Math.min(x2, ((Point) ps[i]).x);
-            y2 = Math.min(y2, ((Point) ps[i]).y);
-        }
-
-        assert (x1 >= x2);
-        assert (y1 >= y2);
-
-        return new Point[]{new Point(x1, y1), new Point(x2, y2)};
+    public static void printResult(double area_sum, double boundaries) {
+        System.out.printf("Sum of area covered by the patterns:\n%f\n\n", area_sum);
+        //System.out.printf("The common boundaries of the patterns:\n(%d, %d) x (%d, %d)\n\n", boundaries);
     }
-
-    static double area(Object[] ps) throws Exception {
-        int x1 = Integer.MIN_VALUE,
-                y1 = Integer.MIN_VALUE,
-                x2 = Integer.MAX_VALUE,
-                y2 = Integer.MAX_VALUE;
-
-        for (int i = 1; i < ps.length - (ps[0].equals("triangle") ? 0 : 1); i++) {
-            x1 = Math.max(x1, ((Point) ps[i]).x);
-            y1 = Math.max(y1, ((Point) ps[i]).y);
-            x2 = Math.min(x2, ((Point) ps[i]).x);
-            y2 = Math.min(y2, ((Point) ps[i]).y);
-        }
-
-        assert (x1 >= x2);
-        assert (y1 >= y2);
-
-        // triangle: draw a quadrilateral around it and calculate half of the area
-        // quadrilateral: ala = side * other side
-        // circle: area = pi * r^2 ja r = sqrt(dx^2 + dy^2), so area = pi * (dx^2 + dy^2)
-        return switch ((String) ps[0]) {
-            case "triangle" -> (x1 - x2) * (y1 - y2) / 2;
-            case "quadrilateral" -> (x1 - x2) * (y1 - y2);
-            case "circle" -> Math.PI * ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-            default -> throw new Exception("Unfamiliar pattern!");
-        };
-    }
-
-    public static void main() throws Exception {
-        System.out.print("A circle is defined by a centre and a perimeter point, the others by corner points");
-
-        Object[] p1 = new Object[4];
-        p1[0] = readType();
-        p1[1] = readPoint();
-        p1[2] = readPoint();
-        if (p1[0].equals("triangle"))
-            p1[3] = readPoint();
-
-        Object[] p2 = new Object[4];
-        p2[0] = readType();
-        p2[1] = readPoint();
-        p2[2] = readPoint();
-        if (p2[0].equals("triangle"))
-            p2[3] = readPoint();
-
-        // Calculate the area covered by the patterns
-        // No need to take into account the overlapping of patterns
-
-        {
-            double area_sum = 0;
-            area_sum += area(p1);
-            area_sum += area(p2);
-
-            System.out.printf("Sum of area covered by the patterns:\n%f\n\n", area_sum);
-        }
-
-        // calculate the outer boundaries of the area covered by the patterns
-
-        int x1 = Integer.MIN_VALUE,
-                y1 = Integer.MIN_VALUE,
-                x2 = Integer.MAX_VALUE,
-                y2 = Integer.MAX_VALUE;
-
-        {
-            Point[] b1 = boundaries(p1);
-
-            x1 = Math.max(x1, b1[0].x);
-            y1 = Math.max(y1, b1[0].y);
-            x2 = Math.min(x2, b1[1].x);
-            y2 = Math.min(y2, b1[1].y);
-        }
-
-        {
-            Point[] b2 = boundaries(p2);
-
-            x1 = Math.max(x1, b2[0].x);
-            y1 = Math.max(y1, b2[0].y);
-            x2 = Math.min(x2, b2[1].x);
-            y2 = Math.min(y2, b2[1].y);
-        }
-
-        assert (x1 >= x2);
-        assert (y1 >= y2);
-
-        System.out.printf("The common boundaries of the patterns:\n(%d, %d) x (%d, %d)\n\n",
-                x2, y2, x1, y1);
-    }
-
-    
 }
 
