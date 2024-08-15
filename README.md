@@ -24,7 +24,7 @@ is defined by the user and the `ShapeManager` returns a list of required "subsha
 `Shape[] objects = ShapeManager.createObjects(shape, N_OBJECTS)`;
 
 When the `Calculator` class processes the `Shape[] objects` list further, the newly created shapes e.g. Triangles will directly 
-call the methods in the Triangle class thus using the correct method (see line 88 or below).
+call the methods in the Triangle class thus using the correct method (see line 88 or below). This will make the code reusable regardless of what type of shapes added to the mix.
 ```
 static double getSumOfAreas(Shape[] objects) {
     return Arrays.stream(objects)          
@@ -33,8 +33,7 @@ static double getSumOfAreas(Shape[] objects) {
 }
 
 ```
-
-Ideally this constant and the supported shapes would reside in a separate configApp class to make the 
-modifications even easier or it could be modified by the user . Then adding a new shape would only require modifying the configApp class and 
-creating a new subclass with appropriate calculation methods. 
+As for general modularity and reusability, the predefined but dynamic values (number of shapes, supported shapes, supported calculations) would live in a different `configApp` making the userInterface totally generic and easy to replace with a graphic UI. 
+Then adding new shapes would only entail updating `configApp`, creating a subclass and appropriate methods. The calculations could also
+be distributed to different interfaces to add flexibility for prospective, more complex stuff. This way the Shape subclasses would mainly hold data, implement suitable interfaces and override the methods accordingly.
 */
