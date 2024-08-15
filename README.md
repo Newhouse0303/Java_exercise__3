@@ -36,4 +36,6 @@ static double getSumOfAreas(Shape[] objects) {
 As for general modularity and reusability, the predefined but dynamic values (number of shapes, supported shapes, supported calculations) would live in a different `configApp` making the userInterface totally generic and easy to replace with a graphic UI. 
 Then adding new shapes would only entail updating `configApp`, creating a subclass and appropriate methods. The calculations could also
 be distributed to different interfaces to add flexibility for prospective, more complex stuff. This way the Shape subclasses would mainly hold data, implement suitable interfaces and override the methods accordingly.
-*/
+
+I would also pay more attention to the separation of concerns for example on line 47 in the `Calculator` prints the result when that is 
+clearly the business of the user interface and keeping the tasks neatly in suitable classes. The same goes for encapsulation to which I paid zero attention. 
