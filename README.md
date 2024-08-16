@@ -26,7 +26,7 @@ is defined by the user and the `ShapeManager` returns a list of required "subsha
 When the `Calculator` class processes the `Shape[] objects` list further, the newly created shapes e.g. Triangles will directly 
 call the methods in the Triangle class thus using the correct method (see line 88 or below). This will make the code reusable regardless of what type of shapes added to the mix.
 ```
-static double getSumOfAreas(Shape[] objects) {
+static double getSumOfAreas(Shape[] objects) {    // here each object is of the chosen subtype
     return Arrays.stream(objects)          
                  .mapToDouble(Shape::calculateArea) 
                  .sum();                   
@@ -38,4 +38,4 @@ Then adding new shapes would only entail updating `configApp`, creating a subcla
 be distributed to different interfaces to add flexibility for prospective, more complex stuff. This way the Shape subclasses would mainly hold data, implement suitable interfaces and override the methods accordingly.
 
 I would also pay more attention to the separation of concerns for example on line 47 in the `Calculator` prints the result when that is 
-clearly the business of the user interface and keeping the tasks neatly in suitable classes. The same goes for encapsulation to which I paid zero attention. 
+clearly the business of the user interface. Also the `record Point(int x, int y) {}` is alone on the top level where it should be declared within a class, maybe in `userInterface`where it is used. 
